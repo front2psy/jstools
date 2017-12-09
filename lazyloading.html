@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>懒加载</title>
+</head>
+<body>
+	
+	<div id="div1">点击吧，巨人们！</div>
+
+	<script>
+		/**
+		 * 在项目中，我们需要根据不同的浏览器或者某个环境，更换显示的内容。
+		 * 为了减少每次都需要进行的判断，可以采用懒加载的模式进行。
+		 * 即只有在初始化时，某个功能就确定，后面不论怎么调用，都不会改变重新进行分支判断。
+		*/
+
+		var a = 0, b = 10;
+		var addEvent = function (elem, type, handler) {
+			if ( window.addEventListener ) {
+				addEvent = function (elem, type, handler) {
+					elem.addEventListener(type, handler, false);
+				}
+				console.log(a++);	// 用与判断此分支运行的次数
+			} else if ( window.attachEvent ) {
+				addEvent = function (elem, type, handler) {
+					elem.attachEvent('on' + type, handler);
+				};
+				console.log(b++);		// 用与判断此分支运行的次数
+			}
+
+			addEvent(elem, type, handler);
+		};
+
+		var div = document.getElementById('div1');
+
+		addEvent(div, 'click', function(){
+			console.log('first');
+		});
+
+		addEvent(div, 'click', function(){
+			console.log('sec');
+		});
+
+	</script>
+
+</body>
+</html>

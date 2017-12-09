@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>分时函数</title>
+</head>
+<body>
+	
+	<script>
+		/*
+		 * 在项目中，可能某个请求中，一次返回大量数据；
+		 * 这就可以分批次将数据渲染到页面上。
+		*/
+
+		var timeChund = function (arr, fn, count) {
+			var obj,
+					t;
+
+			var start = function () {
+				for (var i = 0; i < Math.min(count || 1, arr.length); i++) {
+					obj = arr.shift();
+					fn(obj);
+				}
+			};
+
+			return function (interval) {
+				t = setInterval( function () {
+					if (arr.length === 0) {
+						return clearInterval(t);
+					}
+
+					start();
+				}, interval || 200);
+			}
+		};
+
+		var arrs = function (n) {
+			
+			var array = [];
+
+			for (var i = 1; i <= n; i++) {
+				array.push(i);
+			}
+
+			return array;
+		};
+
+		var renderDOM = function (dom) {
+			var div = document.createElement('div' );
+			div.innerHTML = dom;
+			document.body.appendChild(div);
+		};
+
+		timeChund(arrs(100), renderDOM, 8)(1000);
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>限流函数</title>
+</head>
+<body>
+	<script>
+		/**
+		 * 在项目中，可能会遇到出现连续激活的事件，或回调，这可能会导致代码性能下降，甚至可能导致浏览器挂掉
+		 * 因此，可以使用限流的形式，对回调的频次进行限制优化
+		*/
+
+		var throttling = function ( fn, interval ) {
+
+			var __self = fn,
+					firstTime = true,
+					timeout;
+
+			return function () {
+				var args = arguments,
+						__me = this;
+
+				if ( firstTime ) {
+					__self.apply(__me, args);
+					return firstTime = false;
+				}
+
+				if (timeout) {
+					return false;
+				}
+
+				timeout = setTimeout(function () {
+
+					clearTimeout(timeout);
+					timeout = null;
+					__self.apply(__me, args);
+
+				}, interval || 500);
+
+			}
+		};
+
+		window.onresize = throttling(function(){
+			console.log(1);
+		}, 1000);
+	</script>
+</body>
+</html>
